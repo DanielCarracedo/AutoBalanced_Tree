@@ -1,6 +1,7 @@
 from typing import Any, List, Optional, Tuple
 from collections import deque
-
+import matplotlib.pyplot as plt
+import networkx as nx
 # Creacion de la clase nodo
 
 
@@ -340,6 +341,35 @@ def generate_sample_abb():
     return T
 
 
+def draw_binary_tree(root, filename):
+    G = nx.Graph()
+
+    def add_edges(node, pos=None, level=0, max_level=None):
+        if max_level is not None and level > max_level:
+            return
+        if pos is None:
+            pos = (0, 0)
+        G.add_node(node.data, pos=pos)
+        if node.left:
+            new_pos = (pos[0] - 1 / 2 ** level, pos[1] - 1)
+            G.add_edge(node.data, node.left.data)
+            add_edges(node.left, pos=new_pos,
+                      level=level + 1, max_level=max_level)
+        if node.right:
+            new_pos = (pos[0] + 1 / 2 ** level, pos[1] - 1)
+            G.add_edge(node.data, node.right.data)
+            add_edges(node.right, pos=new_pos,
+                      level=level + 1, max_level=max_level)
+
+    add_edges(root)
+
+    pos = nx.get_node_attributes(G, 'pos')
+    nx.draw(G, pos, with_labels=True, node_size=700,
+            node_color="skyblue", font_size=10)
+    plt.savefig(filename)  # Guarda el árbol como imagen
+    plt.close()  # Cierra la figura para liberar memoria
+
+
 """T = generate_sample_abb()
 T.levels_nr()
 T.Delete_Node("G")
@@ -362,4 +392,7 @@ T.Delete_Node(15)
 T.levels_nr()
 print("\n")
 T.Delete_Node(11)
+T.Delete_Node(9)
 T.levels_nr()
+
+draw_binary_tree(T.root, "binary_tree.png")
