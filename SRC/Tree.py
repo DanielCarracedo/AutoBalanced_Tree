@@ -4,18 +4,34 @@ from collections import deque
 # Creacion de la clase nodo
 
 
+class Queue:
+
+    def __init__(self) -> None:
+        self.queue: List[Any] = []
+
+    def add(self, elem: Any) -> None:
+        self.queue.append(elem)
+
+    def remove(self) -> Any:
+        return self.queue.pop(0)
+
+    def is_empty(self) -> bool:
+        return len(self.queue) == 0
+
+
 class Stack:
-    def __init__(self):
-        self.items = []
 
-    def push(self, item):
-        self.items.append(item)
+    def __init__(self) -> None:
+        self.stack: List[Any] = []
 
-    def pop(self):
-        if not self.is_empty():
-            return self.items.pop()
-        else:
-            raise IndexError("pop from an empty stack")
+    def add(self, elem: Any) -> None:
+        self.stack.append(elem)
+
+    def remove(self) -> Any:
+        return self.stack.pop()
+
+    def is_empty(self) -> bool:
+        return len(self.stack) == 0
 
     def __iter__(self):
         return self
@@ -24,7 +40,7 @@ class Stack:
         if self.is_empty():
             raise StopIteration
         else:
-            return self.pop()
+            return self.remove()
 
 
 class Node:
@@ -44,21 +60,33 @@ class Tree:
         aux = node.left
         node.left = aux.right
         aux.right = node
+        if node.data == self.root.data:
+            self.root = aux
         return aux
 
     def slr(self, node) -> Node:
         aux = node.right
         node.right = aux.left
         aux.left = node
+        if node.data == self.root.data:
+            self.root = aux
         return aux
 
     def dlrr(self, node) -> Node:
         node.left = self.slr(node.left)
-        return self.srr(node)
+        x = self.srr(node)
+        father = self.search_Father(node.data)
+        father.left = x
+        if node == self.root:
+            self.root = x
 
     def drlr(self, node) -> Node:
         node.right = self.srr(node.right)
-        return self.slr(node)
+        x = self.slr(node)
+        father = self.search_Father(node.data)
+        father.right = x
+        if node == self.root:
+            self.root = x
 
     def height(self, node):
         if node is None:
@@ -67,12 +95,14 @@ class Tree:
             left_height = self.height(node.left)
             right_height = self.height(node.right)
 
-            return max(left_height, right_height) + 1
+        return max(left_height, right_height) + 1
 
     def balance_factor(self, node):
         if node is None:
             return 0
-        return self.height(node.right) - self.height(node.left)
+        left_height = self.height(node.left)
+        right_height = self.height(node.right)
+        return right_height - left_height
 
     def rebalance(self, node):
         balance = self.balance_factor(node)
@@ -80,70 +110,119 @@ class Tree:
         rightbalance = self.balance_factor(node.right)
 
         if balance > 1 and rightbalance > 0:
+            print("slr")
             return self.slr(node)
 
         if balance < -1 and leftbalance < 0:
+            print("srr")
             return self.srr(node)
 
-        if balance > 2 and rightbalance < 0:
+        if balance < -1 and leftbalance > 0:
+            print("dlrr")
             return self.dlrr(node)
 
-        if balance < -1 and leftbalance > 0:
+        if balance > 1 and rightbalance < 0:
+            print("drlr")
             return self.drlr(node)
+
+        if balance == 2 and rightbalance == 0:
+            return self.slr(node)
+
+        if balance == -2 and leftbalance == 0:
+            return self.srr(node)
 
         return node
 
     def rebalance_tree(self, node):
-        path = Stack()
+        path = Queue()
         current = node
         while current is not None:
-            path.push(current)
-            current = self.search_Father(current)
+            path.add(current)
+            current = self.search_Father(current.data)
 
-        # Rebalance all nodes along the path
-        for node in path:
+    # Rebalance all nodes along the path
+        while not path.is_empty():
+            node = path.remove()
             node = self.rebalance(node)
 
     def find_predecessor(self, node):
-        pass
+        if node.left is not None:
+            # If the node has a left subtree, the predecessor is the maximum value node in that subtree
+            return self._max_value(node.left)
+        else:
+            # If the node does not have a left subtree, traverse up the tree to find the predecessor
+            pred = None
+            current = self.root
+            while current is not None:
+                if node.key < current.key:
+                    current = current.left
+                elif node.key > current.key:
+                    pred = current
+                    current = current.right
+                else:
+                    break
+            return pred
+
+    def _max_value(self, node):
+        while node.right is not None:
+            node = node.right
+        return node
+
+    def search_node(self, node):
+        p = self.root
+        s = Stack()
+        while (p is not None or not s.is_empty()):
+            if p is not None:
+                if p.data == node:
+                    return p
+                else:
+                    s.add(p)
+                    p = p.left
+            else:
+                p = s.remove()
+                p = p.right
 
     def Delete_Node(self, node) -> None:
-        if node.right is not None and node.left is not None:
-            predecessor = self.find_predecessor()
-            father = self.search_Father(predecessor)
-            if predecessor.left is None:
-                node.data = predecessor.data
-                if father.right == predecessor:
-                    father.right = None
+        node = self.search_node(node)
+        if node is not None:
+            if node.right is not None and node.left is not None:
+                predecessor = self.find_predecessor(node)
+                father = self.search_Father(predecessor.data)
+                if predecessor.left is None:
+                    node.data = predecessor.data
+                    if father.right == predecessor:
+                        father.right = None
+                    else:
+                        father.left = None
                 else:
+                    node.data = predecessor.data
+                    if father.right == predecessor:
+                        father.right = predecessor.left
+                    else:
+                        father.left = predecessor.left
+                self.rebalance_tree(node)
+            elif node.right is not None or node.left is not None:
+                father = self.search_Father(node.data)
+                if node.left is not None:
+                    if father.left == node:
+                        father.left = node.left
+                    else:
+                        father.right = node.left
+                elif node.right is not None:
+                    if father.left == node:
+                        father.left = node.right
+                    else:
+                        father.right = node.right
+                self.rebalance_tree(node)
+            else:
+                father = self.search_Father(node.data)
+                if father.left == node:
                     father.left = None
-            else:
-                node.data = predecessor.data
-                if father.right == predecessor:
-                    father.right = predecessor.left
                 else:
-                    father.left = predecessor.left
-
-        elif node.right is not None or node.left is not None:
-            father = self.search_Father(node)
-            if node.left is not None:
-                if father.left == node:
-                    father.left = node.left
-                else:
-                    father.right = node.left
-            elif node.right is not None:
-                if father.left == node:
-                    father.left = node.right
-                else:
-                    father.right = node.right
-        else:
-            father = self.search_Father(node)
-            if father.left == node:
-                father.left = None
-            else:
-                father.right = None
-
-        self.rebalance_tree()
+                    father.right = None
+                print("\n")
+                self.levels_nr()
+                self.rebalance_tree(father)
 
     def search_Father(self, data_s: Any) -> None:
         p, pad = self.root, None
@@ -152,7 +231,7 @@ class Tree:
             if p is not None:
                 if p.data == data_s:
                     if pad is not None:
-                        print(f'El padre de {data_s!r} es {pad.data!r}')
+                        return pad
                     flag = True
                 else:
                     s.add(p)
@@ -162,9 +241,6 @@ class Tree:
                 p = s.remove()
                 pad = p
                 p = p.right
-
-        if not flag or pad is None:
-            print(f'Para {data_s!r} no hay padre')
 
     def _Insert_New_node(self) -> None:
         pass
@@ -186,3 +262,38 @@ class Tree:
 
     def _search_Uncle(self) -> None:
         pass
+
+    def levels_nr(self) -> None:
+        p, q = self.root, Queue()
+        q.add(p)
+        while not q.is_empty():
+            p = q.remove()
+            print(p.data, end=' ')
+            if p.left is not None:
+                q.add(p.left)
+            if p.right is not None:
+                q.add(p.right)
+
+
+def generate_sample_abb():
+    T = Tree(Node('A'))
+    T.root.left = Node('B')
+    T.root.right = Node('C')
+    T.root.left.left = Node('D')
+    T.root.left.right = Node('E')
+    T.root.right.right = Node('F')
+    T.root.left.left.left = Node('G')
+    T.root.left.left.right = Node('H')
+    T.root.right.right.left = Node('I')
+    T.root.right.right.right = Node('J')
+    T.root.right.left = Node('K')
+
+    return T
+
+
+T = generate_sample_abb()
+T.levels_nr()
+T.Delete_Node("G")
+print("\n")
+T.Delete_Node("E")
+T.levels_nr()
