@@ -74,15 +74,16 @@ class Tree:
         aux = node.right
         node.right = aux.left
         aux.left = node
+        father = self.search_Father(node.data)
         if node.data == self.root.data:
             self.root = aux
-        father = self.search_Father(node.data)
-        if father.left is not None:
-            if father.right.data == node.data:
-                father.right = aux
-        if father.right is not None:
-            if father.left.data == node.data:
-                father.left = aux
+        if father is not None:
+            if father.left is not None:
+                if father.right.data == node.data:
+                    father.right = aux
+            if father.right is not None:
+                if father.left.data == node.data:
+                    father.left = aux
 
     def dlrr(self, node) -> Node:
         aux = node.left.right
@@ -99,8 +100,7 @@ class Tree:
         aux.right = node.right
         if node.right.data == self.root.data:
             self.root = aux
-        father = self.search_Father(node.data)
-        father.left = aux
+        node.right = aux
         self.slr(node)
 
     def height(self, node):
@@ -135,9 +135,17 @@ class Tree:
         balance = self.balance_factor(node)
         leftbalance = self.balance_factor(node.left)
         rightbalance = self.balance_factor(node.right)
-        print(f"{balance} {node.data}")
+        """print(f"{balance} {node.data}")
         print(f"{leftbalance} l")
-        print(f"{rightbalance} r")
+        print(f"{rightbalance} r")"""
+        if balance == 2 and rightbalance == 0:
+            print("conflicto 2")
+            return self.slr(node)
+
+        if balance == -2 and leftbalance == 0:
+            print("conflicto -2")
+            return self.srr(node)
+
         if balance > 1 and rightbalance > 0:
             print("slr")
             return self.slr(node)
@@ -153,12 +161,6 @@ class Tree:
         if balance > 1 and rightbalance < 0:
             print("drlr")
             return self.drlr(node)
-
-        if balance == 2 and rightbalance == 0:
-            return self.slr(node)
-
-        if balance == -2 and leftbalance == 0:
-            return self.srr(node)
 
         return node
 
@@ -264,8 +266,33 @@ class Tree:
                 pad = p
                 p = p.right
 
-    def _Insert_New_node(self) -> None:
-        pass
+    def _Insert_New_node(self, dato) -> None:
+        dato = Node(dato)
+        if self.root is None:
+            self.root = dato
+            return True
+
+        p = self.search_node(dato)
+        stack = Stack()
+        current = self.root
+        if p is None:
+            while current:
+                if dato.data < current.data:
+                    if current.left is None:
+                        current.left = dato
+                        self.rebalance_tree(dato)
+                        return True
+                    else:
+                        current = current.left
+                elif dato.data > current.data:
+                    if current.right is None:
+                        current.right = dato
+                        self.rebalance_tree(dato)
+                        return True
+                    else:
+                        current = current.right
+
+        return False
 
     def _Search_Node(self) -> None:
         pass
@@ -313,10 +340,26 @@ def generate_sample_abb():
     return T
 
 
-T = generate_sample_abb()
+"""T = generate_sample_abb()
 T.levels_nr()
 T.Delete_Node("G")
 print("\n")
 T.levels_nr()
 T.Delete_Node("E")
+T.levels_nr()"""
+
+T = Tree()
+T._Insert_New_node(10)
+T._Insert_New_node(8)
+T._Insert_New_node(12)
+T._Insert_New_node(9)
+T._Insert_New_node(11)
+T._Insert_New_node(7)
+T._Insert_New_node(13)
+T._Insert_New_node(15)
+T._Insert_New_node(14)
+T.Delete_Node(15)
+T.levels_nr()
+print("\n")
+T.Delete_Node(11)
 T.levels_nr()
