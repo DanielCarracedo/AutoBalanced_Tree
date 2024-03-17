@@ -323,22 +323,6 @@ class Tree:
                 q.add(p.right)
 
 
-def generate_sample_abb():
-    T = Tree(Node('A'))
-    T.root.left = Node('B')
-    T.root.right = Node('C')
-    T.root.left.left = Node('D')
-    T.root.left.right = Node('E')
-    T.root.right.right = Node('F')
-    T.root.left.left.left = Node('G')
-    T.root.left.left.right = Node('H')
-    T.root.right.right.left = Node('I')
-    T.root.right.right.right = Node('J')
-    T.root.right.left = Node('K')
-
-    return T
-
-
 def draw_binary_tree(root, filename):
     G = nx.Graph()
 
@@ -366,31 +350,3 @@ def draw_binary_tree(root, filename):
             node_color="skyblue", font_size=10)
     plt.savefig(filename)  # Guarda el árbol como imagen
     plt.close()  # Cierra la figura para liberar memoria
-
-
-"""T = generate_sample_abb()
-T.levels_nr()
-T.Delete_Node("G")
-print("\n")
-T.levels_nr()
-T.Delete_Node("E")
-T.levels_nr()"""
-
-T = Tree()
-T._Insert_New_node(10)
-T._Insert_New_node(8)
-T._Insert_New_node(12)
-T._Insert_New_node(9)
-T._Insert_New_node(11)
-T._Insert_New_node(7)
-T._Insert_New_node(13)
-T._Insert_New_node(15)
-T._Insert_New_node(14)
-T.Delete_Node(15)
-T.levels_nr()
-print("\n")
-T.Delete_Node(11)
-T.Delete_Node(9)
-T.levels_nr()
-
-draw_binary_tree(T.root, "binary_tree.png")
