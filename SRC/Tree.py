@@ -2,6 +2,7 @@ from typing import Any, List, Optional, Tuple
 from collections import deque
 import matplotlib.pyplot as plt
 import networkx as nx
+import os
 # Creacion de la clase nodo
 
 
@@ -364,7 +365,18 @@ def draw_binary_tree(root, filename):
     plt.close()  # Cierra la figura para liberar memoria
 
 
-T = Tree()
+def encontrar_archivos(name_carpeta) -> None:
+    ruta_act = os.path.dirname(os.path.abspath(__file__))
+    ruta_obj = os.path.join(ruta_act, name_carpeta)
+    # Lista para almacenar los nombres de archivos de imágenes
+    # Obtener una lista de todos los elementos en la ruta especificada
+    elementos = os.listdir(ruta_obj)
+    for elemento in elementos:
+        # Comprobar si el elemento es un archivo
+        print(elemento)
+
+
+"""T = Tree()
 T._Insert_New_node(1)
 T._Insert_New_node(2)
 T._Insert_New_node(3)
@@ -376,4 +388,17 @@ T._Insert_New_node(8)
 T._Insert_New_node(9)
 T._Insert_New_node(10)
 
-draw_binary_tree(T.root, "Prueba")
+draw_binary_tree(T.root, "Prueba")"""
+
+ruta_actual = os.path.dirname(os.path.abspath(__file__))
+
+# Paso 2: Construir la ruta de la carpeta dentro de tu proyecto
+ruta_carpeta_objetivo = os.path.join(ruta_actual, "bike")
+
+# Paso 3: Listar los elementos dentro de la carpeta
+elementos_en_carpeta = os.listdir(ruta_carpeta_objetivo)
+
+# Paso 4: Iterar sobre la lista de elementos y procesarlos
+for elemento in elementos_en_carpeta:
+    # Aquí puedes realizar cualquier operación con cada elemento, por ejemplo, imprimir sus nombres
+    print(elemento)

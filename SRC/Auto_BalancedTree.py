@@ -70,57 +70,39 @@ class BalancedTreeWg(QMainWindow):
 
     def agregar_archivos(self) -> None:
         Cat = self.Categoria.currentText()
-        r_fin = self.encontrar_ruta(Cat)
-        lista_archivos = self.encontrar_archivos(r_fin)
+        lista_archivos = self.encontrar_archivos(Cat)
         self.Imagenes.clear()
         self.Imagenes.addItems(lista_archivos)
 
     def agregar_archivos_1(self) -> None:
         Cat_1 = self.Categoria_1.currentText()
-        r_fin = self.encontrar_ruta(Cat_1)
-        lista_archivos = self.encontrar_archivos(r_fin)
+        lista_archivos = self.encontrar_archivos(Cat_1)
         self.Imagen_1.clear()
         self.Imagen_1.addItems(lista_archivos)
 
     def agregar_archivos_2(self) -> None:
         Cat_2 = self.Categoria_2.currentText()
-        r_fin = self.encontrar_ruta(Cat_2)
-        lista_archivos = self.encontrar_archivos(r_fin)
+        lista_archivos = self.encontrar_archivos(Cat_2)
         self.Imagen_2.clear()
         self.Imagen_2.addItems(lista_archivos)
 
     def agregar_archivos_3(self) -> None:
         Cat_3 = self.Categoria_3.currentText()
-        r_fin = self.encontrar_ruta(Cat_3)
-        lista_archivos = self.encontrar_archivos(r_fin)
+        lista_archivos = self.encontrar_archivos(Cat_3)
         self.Imagen_3.clear()
         self.Imagen_3.addItems(lista_archivos)
 
-    def encontrar_ruta(self, name_carpeta) -> None:
-        if name_carpeta != "Elige una opción":
-            # Recorre los archivos y directorios en todo el sistema de archivos
-            for root, dirs, files in os.walk('/'):
-                # Verifica si el nombre de la carpeta coincide
-                if name_carpeta in dirs:
-                    # Si encuentra la carpeta, devuelve la ruta completa
-                    return os.path.join(root, name_carpeta)
-
-            # Si no se encuentra la carpeta, devuelve None
-            return None
-
-    def encontrar_archivos(self, ruta) -> None:
-        # Verifica si la ruta de la carpeta existe
-        if os.path.exists(ruta) and os.path.isdir(ruta):
-            # Lista para almacenar los nombres de archivos de imágenes
-            nombres_imagenes = []
-
-            # Itera sobre los archivos en la carpeta
-            for archivo in os.listdir(ruta):
-                # Verifica si el archivo es una imagen (puedes agregar más extensiones si es necesario)
-                if archivo.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
-                    nombres_imagenes.append(archivo)
-
-            return nombres_imagenes
+    def encontrar_archivos(self, name_carpeta) -> None:
+        ruta_act = os.path.dirname(os.path.abspath(__file__))
+        ruta_obj = os.path.join(ruta_act, name_carpeta)
+        # Lista para almacenar los nombres de archivos de imágenes
+        archivos = []
+        # Obtener una lista de todos los elementos en la ruta especificada
+        elementos = os.listdir(ruta_obj)
+        for elemento in elementos:
+            # Comprobar si el elemento es un archivo
+            archivos.append(elemento)
+        return archivos
 
     def insertar_nodo(self):
         dato = self.Imagenes.currentText()
