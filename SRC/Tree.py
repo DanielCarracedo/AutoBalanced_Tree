@@ -295,17 +295,15 @@ class Tree:
 
         return False
 
-    def _Search_Node(self) -> None:
-        pass
-
     def _Search_Nodes(self) -> None:
         pass
 
     def _Levels_Tree(self) -> None:
         pass
 
-    def _Node_Level(self) -> None:
-        pass
+    def _Node_Level(self, node):
+        node = self.search_node(node)
+        return self.height(self.root) - self.height(node)
 
     def _Search_Grandpa(self) -> None:
         pass
