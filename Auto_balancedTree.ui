@@ -527,7 +527,7 @@ background-color: rgb(250, 250, 250);</string>
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="currentIndex">
-                <number>1</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="Principal">
                 <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -666,7 +666,7 @@ background-color: rgb(250, 250, 250);</string>
                              <string/>
                             </property>
                             <property name="pixmap">
-                             <pixmap>Imagenes/Arbol Prueba.png</pixmap>
+                             <pixmap>arbol.png</pixmap>
                             </property>
                            </widget>
                           </item>
