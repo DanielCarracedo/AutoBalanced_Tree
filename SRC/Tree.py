@@ -336,17 +336,6 @@ class Tree:
     def _search_Uncle(self)-> None:
         pass
 
-   """ def levels_nr(self) -> None:
-        p, q = self.root, Queue()
-        q.add(p)
-        while not q.is_empty():
-            p = q.remove()
-            print(p.data, end=' ')
-            if p.left is not None:
-                q.add(p.left)
-            if p.right is not None:
-                q.add(p.right)"""
-
 
 def draw_binary_tree(root, filename):
     G = nx.Graph()
@@ -369,9 +358,22 @@ def draw_binary_tree(root, filename):
                       level=level + 1, max_level=max_level)
 
     add_edges(root)
-
     pos = nx.get_node_attributes(G, 'pos')
     nx.draw(G, pos, with_labels=True, node_size=700,
             node_color="skyblue", font_size=10)
     plt.savefig(filename)  # Guarda el árbol como imagen
     plt.close()  # Cierra la figura para liberar memoria
+
+T = Tree()
+T._Insert_New_node(1)
+T._Insert_New_node(2)
+T._Insert_New_node(3)
+T._Insert_New_node(4)
+T._Insert_New_node(5)
+T._Insert_New_node(6)
+T._Insert_New_node(7)
+T._Insert_New_node(8)
+T._Insert_New_node(9)
+T._Insert_New_node(10)
+
+draw_binary_tree(T.root, "Prueba")
