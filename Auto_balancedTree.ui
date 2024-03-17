@@ -527,7 +527,7 @@ background-color: rgb(250, 250, 250);</string>
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="currentIndex">
-                <number>0</number>
+                <number>3</number>
                </property>
                <widget class="QWidget" name="Principal">
                 <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1793,6 +1793,13 @@ QComboBox::down-arrow {
                          </spacer>
                         </item>
                        </layout>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="Info">
+                        <property name="text">
+                         <string/>
+                        </property>
+                       </widget>
                       </item>
                       <item>
                        <spacer name="verticalSpacer_13">
