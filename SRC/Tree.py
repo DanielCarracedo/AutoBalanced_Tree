@@ -45,18 +45,19 @@ class Stack:
 
 
 class Node:
-    def __init__(self, data: any) -> None:
-        self.left: Optional["Node"] = None
-        self.right: Optional["Node"] = None
-        self.data = data
 
 # Creacion de la clase Tree y sus funciones
 
-
+    def __init__(self, data:any, category:str) -> None:
+        self.left:Optional["Node"] = None
+        self.right:Optional["Node"] = None
+        self.data = data
+   
+#Creacion de la clase Tree y sus funciones       
 class Tree:
     def __init__(self, root: "Node" = None) -> None:
         self.root = root
-
+     
     def srr(self, node) -> Node:
         aux = node.left
         node.left = aux.right
@@ -123,15 +124,6 @@ class Tree:
                 queue.append((current_node.right, level + 1))
 
         return max_level
-
-    def balance_factor(self, node):
-        if node is None:
-            return 0
-
-        left_height = self.height(node.left)
-        right_height = self.height(node.right)
-        return right_height - left_height
-
     def rebalance(self, node):
         balance = self.balance_factor(node)
         leftbalance = self.balance_factor(node.left)
@@ -192,25 +184,34 @@ class Tree:
                     break
             return pred
 
-    def _max_value(self, node):
-        while node.right is not None:
-            node = node.right
-        return node
+    def _Insert_New_node(self, dato) -> None:
+        dato = Node(dato)
+        if self.root is None:
+            self.root = dato
+            return True
 
-    def search_node(self, node):
-        p = self.root
-        s = Stack()
-        while (p is not None or not s.is_empty()):
-            if p is not None:
-                if p.data == node:
-                    return p
-                else:
-                    s.add(p)
-                    p = p.left
-            else:
-                p = s.remove()
-                p = p.right
+        p = self.search_node(dato)
+        stack = Stack()
+        current = self.root
+        if p is None:
+            while current:
+                if dato.data < current.data:
+                    if current.left is None:
+                        current.left = dato
+                        self.rebalance_tree(dato)
+                        return True
+                    else:
+                        current = current.left
+                elif dato.data > current.data:
+                    if current.right is None:
+                        current.right = dato
+                        self.rebalance_tree(dato)
+                        return True
+                    else:
+                        current = current.right
 
+        return False
+    
     def Delete_Node(self, node) -> None:
         node = self.search_node(node)
         if node is not None:
@@ -249,6 +250,65 @@ class Tree:
                     father.right = None
         self.rebalance_tree(father)
 
+
+    def search_node(self, node):
+        p = self.root
+        s = Stack()
+        while (p is not None or not s.is_empty()):
+            if p is not None:
+                if p.data == node:
+                    return p
+                else:
+                    s.add(p)
+                    p = p.left
+            else:
+                p = s.remove()
+                p = p.right
+    #Franche
+    def _Search_Nodes(self)->None:
+        pass
+    
+    #Funcion auxiliar para imprimir el recorrido por niveles
+    def levels(self)->None:
+        
+        #La variable L recibe la lista de listas que contiene los datos y los niveles de los nodos
+        L =self.levels_r(self.root)
+              
+        #El primer for representa el nivel en el que nos encontramos
+        for i in range(len(L)):
+            
+            #El segundo  representa la lista en la que nos encontramos
+            for j in range(len(L)):
+                
+                #La condicion es que si el nivel del nodo de la lista en la posicion j es igual al nivel
+                #en el que nos encontramos entonces lo imprimimos 
+                if L[j][1] == i:
+    
+                    print(L[j][0], end= " ")
+                    
+    def _Levels_Tree_r(self,node:"Node",level=0,levels=[])-> None:
+        if node is not None:
+            levels.append([node.data,level])
+            if node.left is not None:
+                self.levels_r(node.left,level + 1)
+            if node.right is not None:
+                self.levels_r(node.right, level + 1)
+        return levels
+    
+    #Daniel
+    def _Node_Level(self, node):
+        node = self.search_node(node)
+        return self.height(self.root) - self.height(node)
+    
+    #Jose
+    def balance_factor(self, node):
+        if node is None:
+            return 0
+
+        left_height = self.height(node.left)
+        right_height = self.height(node.right)
+        return right_height - left_height
+    
     def search_Father(self, data_s: Any) -> None:
         p, pad = self.root, None
         s, flag = Stack(), False
@@ -267,51 +327,16 @@ class Tree:
                 pad = p
                 p = p.right
 
-    def _Insert_New_node(self, dato) -> None:
-        dato = Node(dato)
-        if self.root is None:
-            self.root = dato
-            return True
-
-        p = self.search_node(dato)
-        stack = Stack()
-        current = self.root
-        if p is None:
-            while current:
-                if dato.data < current.data:
-                    if current.left is None:
-                        current.left = dato
-                        self.rebalance_tree(dato)
-                        return True
-                    else:
-                        current = current.left
-                elif dato.data > current.data:
-                    if current.right is None:
-                        current.right = dato
-                        self.rebalance_tree(dato)
-                        return True
-                    else:
-                        current = current.right
-
-        return False
-
-    def _Search_Nodes(self) -> None:
+    
+    #Franche
+    def _Search_Grandpa(self)-> None:
+        pass
+    
+    #Ya   
+    def _search_Uncle(self)-> None:
         pass
 
-    def _Levels_Tree(self) -> None:
-        pass
-
-    def _Node_Level(self, node):
-        node = self.search_node(node)
-        return self.height(self.root) - self.height(node)
-
-    def _Search_Grandpa(self) -> None:
-        pass
-
-    def _search_Uncle(self) -> None:
-        pass
-
-    def levels_nr(self) -> None:
+   """ def levels_nr(self) -> None:
         p, q = self.root, Queue()
         q.add(p)
         while not q.is_empty():
@@ -320,7 +345,7 @@ class Tree:
             if p.left is not None:
                 q.add(p.left)
             if p.right is not None:
-                q.add(p.right)
+                q.add(p.right)"""
 
 
 def draw_binary_tree(root, filename):
