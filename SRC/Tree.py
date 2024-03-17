@@ -337,7 +337,10 @@ class Tree:
         pass
 
 
-def draw_binary_tree(root, filename):
+def draw_binary_tree(root, relative_path, filename):
+    # Construye la ruta completa al archivo utilizando la ruta relativa proporcionada
+    filepath = os.path.join(relative_path, filename)
+
     G = nx.Graph()
 
     def add_edges(node, pos=None, level=0, max_level=None):
@@ -361,22 +364,14 @@ def draw_binary_tree(root, filename):
     pos = nx.get_node_attributes(G, 'pos')
     nx.draw(G, pos, with_labels=True, node_size=700,
             node_color="skyblue", font_size=10)
-    plt.savefig(filename)  # Guarda el árbol como imagen
-    plt.close()  # Cierra la figura para liberar memoria
+
+    # Guarda el árbol como imagen en la ruta especificada
+    plt.savefig(filepath)
+    plt.close()
 
 
-def encontrar_archivos(name_carpeta) -> None:
-    ruta_act = os.path.dirname(os.path.abspath(__file__))
-    ruta_obj = os.path.join(ruta_act, name_carpeta)
-    # Lista para almacenar los nombres de archivos de imágenes
-    # Obtener una lista de todos los elementos en la ruta especificada
-    elementos = os.listdir(ruta_obj)
-    for elemento in elementos:
-        # Comprobar si el elemento es un archivo
-        print(elemento)
-
-
-"""T = Tree()
+"""
+T = Tree()
 T._Insert_New_node(1)
 T._Insert_New_node(2)
 T._Insert_New_node(3)
@@ -386,19 +381,4 @@ T._Insert_New_node(6)
 T._Insert_New_node(7)
 T._Insert_New_node(8)
 T._Insert_New_node(9)
-T._Insert_New_node(10)
-
-draw_binary_tree(T.root, "Prueba")"""
-
-ruta_actual = os.path.dirname(os.path.abspath(__file__))
-
-# Paso 2: Construir la ruta de la carpeta dentro de tu proyecto
-ruta_carpeta_objetivo = os.path.join(ruta_actual, "bike")
-
-# Paso 3: Listar los elementos dentro de la carpeta
-elementos_en_carpeta = os.listdir(ruta_carpeta_objetivo)
-
-# Paso 4: Iterar sobre la lista de elementos y procesarlos
-for elemento in elementos_en_carpeta:
-    # Aquí puedes realizar cualquier operación con cada elemento, por ejemplo, imprimir sus nombres
-    print(elemento)
+T._Insert_New_node(10)"""

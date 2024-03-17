@@ -1,10 +1,9 @@
 from PyQt5.QtWidgets import QMainWindow, QLineEdit, QWidget,  QHeaderView, QTableWidgetItem, QApplication, QComboBox, QDateEdit, QVBoxLayout, QStackedWidget, QMessageBox, QFileDialog
 from PyQt5 import QtCore, QtWidgets, uic
 from PyQt5.QtCore import QUrl
-from PyQt5.QtGui import QPalette, QColor, QDesktopServices
-from Tree import Tree, Node, Queue, Stack, draw_binary_tree
+from PyQt5.QtGui import QPalette, QColor, QDesktopServices, QPixmap
+from Tree import Tree, draw_binary_tree
 import os
-import sys
 
 
 class BalancedTreeWg(QMainWindow):
@@ -31,9 +30,9 @@ class BalancedTreeWg(QMainWindow):
         # Asignación de funciones a los botones
         self.Agree.clicked.connect(self.insertar_nodo)
         self.Deleted.clicked.connect(self.eliminar_nodo)
-        """self.Buscar.clicked.connect(Tree._Search_Node)
-        self.Search.clicked.connect(Tree._Search_Nodes)
-        self.Recorrer.clicked.connect(Tree.levels)"""
+        self.Buscar.clicked.connect(self.search_Node)
+        self.Search.clicked.connect(self.search_Nodes)
+        self.Recorrer.clicked.connect(self.levels)
 
         # Agregando funciones a las QComboBox
 
@@ -104,16 +103,51 @@ class BalancedTreeWg(QMainWindow):
             archivos.append(elemento)
         return archivos
 
+    def obtener_ruta_imagen(self, nombre_imagen, directorio):
+        ruta_completa = os.path.join(directorio, nombre_imagen)
+        if os.path.exists(ruta_completa):
+            return ruta_completa
+        else:
+            print(
+                f"No se encontró la imagen '{nombre_imagen}' en el directorio '{directorio}'")
+            return None
+
+    def search_Nodes(self):
+        pass
+
+    def levels():
+        pass
+
+    def search_Node(self):
+        x = self.Imagen_2.currentText()
+        node = self.tree.search_node(x)
+
+    def update_image(self):
+        ruta_actual = os.path.dirname(os.path.abspath(__file__))
+        directorio_actual = os.path.join(ruta_actual, "Image")
+        ruta_imagen = self.obtener_ruta_imagen("Arbol.png", directorio_actual)
+        pixmap = QPixmap(ruta_imagen)
+        if not pixmap.isNull():
+            self.Arbol.setPixmap(pixmap.scaled(self.Arbol.size()))
+        else:
+            print("Error: No se pudo cargar la imagen desde", ruta_imagen)
+
     def insertar_nodo(self):
+        ruta_actual = os.path.dirname(os.path.abspath(__file__))
+        ruta_carpeta_objetivo = os.path.join(ruta_actual, "Image")
         dato = self.Imagenes.currentText()
         self.tree._Insert_New_node(dato)
-        draw_binary_tree(self.tree.root, "arbol")
+        draw_binary_tree(self.tree.root, ruta_carpeta_objetivo, "Arbol")
+        self.update_image()
         self.go_to_page1()
 
     def eliminar_nodo(self, dato):
+        ruta_actual = os.path.dirname(os.path.abspath(__file__))
+        ruta_carpeta_objetivo = os.path.join(ruta_actual, "Image")
         dato = self.Imagen_1.currentText()
         self.tree.Delete_Node(dato)
-        draw_binary_tree(self.tree.root, "arbol")
+        draw_binary_tree(self.tree.root, ruta_carpeta_objetivo, "Arbol")
+        self.update_image()
         self.go_to_page1()
 
 
