@@ -126,11 +126,13 @@ class BalancedTreeWg(QMainWindow):
         dato = self.Imagenes.currentText()
         self.tree._Insert_New_node(dato)
         draw_binary_tree(self.tree.root, "arbol")
+        self.go_to_page1()
 
     def eliminar_nodo(self, dato):
         dato = self.Imagen_1.currentText()
         self.tree.Delete_Node(dato)
         draw_binary_tree(self.tree.root, "arbol")
+        self.go_to_page1()
 
 
 if __name__ == '__main__':
