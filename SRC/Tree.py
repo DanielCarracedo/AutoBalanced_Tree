@@ -62,7 +62,13 @@ class Tree:
         aux.right = node
         if node.data == self.root.data:
             self.root = aux
-        return aux
+        father = self.search_Father(node.data)
+        if father.left is not None:
+            if father.right.data == node.data:
+                father.right = aux
+        if father.right is not None:
+            if father.left.data == node.data:
+                father.left = aux
 
     def slr(self, node) -> Node:
         aux = node.right
@@ -70,36 +76,57 @@ class Tree:
         aux.left = node
         if node.data == self.root.data:
             self.root = aux
-        return aux
+        father = self.search_Father(node.data)
+        if father.left is not None:
+            if father.right.data == node.data:
+                father.right = aux
+        if father.right is not None:
+            if father.left.data == node.data:
+                father.left = aux
 
     def dlrr(self, node) -> Node:
-        node.left = self.slr(node.left)
-        x = self.srr(node)
-        father = self.search_Father(node.data)
-        father.left = x
-        if node == self.root:
-            self.root = x
+        aux = node.left.right
+        node.left.right = aux.left
+        aux.left = node.left
+        if node.left.data == self.root.data:
+            self.root = aux
+        node.left = aux
+        self.srr(node)
 
     def drlr(self, node) -> Node:
-        node.right = self.srr(node.right)
-        x = self.slr(node)
+        aux = node.right.left
+        node.right.left = aux.right
+        aux.right = node.right
+        if node.right.data == self.root.data:
+            self.root = aux
         father = self.search_Father(node.data)
-        father.right = x
-        if node == self.root:
-            self.root = x
+        father.left = aux
+        self.slr(node)
 
     def height(self, node):
         if node is None:
             return 0
-        else:
-            left_height = self.height(node.left)
-            right_height = self.height(node.right)
 
-        return max(left_height, right_height) + 1
+        queue = deque()
+        queue.append((node, 1))
+        max_level = 0
+
+        while queue:
+            current_node, level = queue.popleft()
+            max_level = max(max_level, level)
+            # Agregar los nodos hijos a la cola si existen
+
+            if current_node.left:
+                queue.append((current_node.left, level + 1))
+            if current_node.right:
+                queue.append((current_node.right, level + 1))
+
+        return max_level
 
     def balance_factor(self, node):
         if node is None:
             return 0
+
         left_height = self.height(node.left)
         right_height = self.height(node.right)
         return right_height - left_height
@@ -108,7 +135,9 @@ class Tree:
         balance = self.balance_factor(node)
         leftbalance = self.balance_factor(node.left)
         rightbalance = self.balance_factor(node.right)
-
+        print(f"{balance} {node.data}")
+        print(f"{leftbalance} l")
+        print(f"{rightbalance} r")
         if balance > 1 and rightbalance > 0:
             print("slr")
             return self.slr(node)
@@ -140,17 +169,14 @@ class Tree:
             path.add(current)
             current = self.search_Father(current.data)
 
-    # Rebalance all nodes along the path
         while not path.is_empty():
             node = path.remove()
             node = self.rebalance(node)
 
     def find_predecessor(self, node):
         if node.left is not None:
-            # If the node has a left subtree, the predecessor is the maximum value node in that subtree
             return self._max_value(node.left)
         else:
-            # If the node does not have a left subtree, traverse up the tree to find the predecessor
             pred = None
             current = self.root
             while current is not None:
@@ -200,7 +226,6 @@ class Tree:
                         father.right = predecessor.left
                     else:
                         father.left = predecessor.left
-                self.rebalance_tree(node)
             elif node.right is not None or node.left is not None:
                 father = self.search_Father(node.data)
                 if node.left is not None:
@@ -213,16 +238,13 @@ class Tree:
                         father.left = node.right
                     else:
                         father.right = node.right
-                self.rebalance_tree(node)
             else:
                 father = self.search_Father(node.data)
                 if father.left == node:
                     father.left = None
                 else:
                     father.right = None
-                print("\n")
-                self.levels_nr()
-                self.rebalance_tree(father)
+        self.rebalance_tree(father)
 
     def search_Father(self, data_s: Any) -> None:
         p, pad = self.root, None
@@ -295,5 +317,6 @@ T = generate_sample_abb()
 T.levels_nr()
 T.Delete_Node("G")
 print("\n")
+T.levels_nr()
 T.Delete_Node("E")
 T.levels_nr()
