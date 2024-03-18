@@ -116,13 +116,28 @@ class BalancedTreeWg(QMainWindow):
         pass
 
     def levels(self):
-        pass
+        # La variable L recibe la lista de listas que contiene los datos y los niveles de los nodos
+        L = self.tree._Levels_Tree_r(self.tree.root)
+
+        # El primer for representa el nivel en el que nos encontramos
+        for i in range(len(L)):
+
+            # El segundo  representa la lista en la que nos encontramos
+            for j in range(len(L)):
+
+                # La condicion es que si el nivel del nodo de la lista en la posicion j es igual al nivel
+                # en el que nos encontramos entonces lo imprimimos
+                if L[j][1] == i:
+                    agg = self.Recorrido.text() + L[j][0] + " "
+                    self.Recorrido.setText(agg)
 
     def search_Node(self):
         x = self.Imagen_2.currentText()
         node = self.tree.search_node(x)
         if not node:
-            print("here")
+            print("Este nodo no existe bro")
+        else:
+            print("Si existo Bro")
 
     def update_image(self):
         ruta_actual = os.path.dirname(os.path.abspath(__file__))
