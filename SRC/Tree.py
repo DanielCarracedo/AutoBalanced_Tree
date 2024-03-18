@@ -320,79 +320,41 @@ class Tree:
                 pad = p
                 p = p.right
 
-    def encontrar_ruta(self,name_carpeta )->None:
+    def encontrar_ruta(self, name_carpeta) -> None:
         if name_carpeta != "Elige una opción":
-        # Recorre los archivos y directorios en todo el sistema de archivos
+            # Recorre los archivos y directorios en todo el sistema de archivos
             for root, dirs, files in os.walk('/'):
                 # Verifica si el nombre de la carpeta coincide
                 if name_carpeta in dirs:
-                # Si encuentra la carpeta, devuelve la ruta completa
+                    # Si encuentra la carpeta, devuelve la ruta completa
                     return os.path.join(root, name_carpeta)
-    
+
             # Si no se encuentra la carpeta, devuelve None
             return None
-        
-    def encontrar_archivos(self,ruta)-> None:
+
+    def encontrar_archivos(self, ruta) -> None:
         # Verifica si la ruta de la carpeta existe
         if os.path.exists(ruta) and os.path.isdir(ruta):
             # Lista para almacenar los nombres de archivos de imágenes
             nombres_imagenes = []
-        
+
             # Itera sobre los archivos en la carpeta
             for archivo in os.listdir(ruta):
                 # Verifica si el archivo es una imagen (puedes agregar más extensiones si es necesario)
                 if archivo.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
                     nombres_imagenes.append(archivo)
-        
+
             return nombres_imagenes
-    def _Search_Nodes(self, type: str) -> None:
-        current_node = self.root
-        NodeList = []
 
-        def search_recursive(node):
-            if node is not None:
-                if type == 'bike' and 'bike' in node.data:
-                    NodeList.append(node)
-                elif type == 'cars' and 'cars' in node.data:
-                    NodeList.append(node)
-                elif type == 'cats' and 'cats' in node.data:
-                    NodeList.append(node)
-                elif type == 'dogs' and 'dog' in node.data:
-                    NodeList.append(node)
-                elif type == 'flowers' and 'flowers' in node.data:
-                    NodeList.append(node)
-                elif type == 'horses' and 'horse' in node.data:
-                    NodeList.append(node)
-                elif type == 'human' and 'rider' in node.data:
-                    NodeList.append(node)
+    def search_Nodes(self, tipo: str):
+        ruta_actual = os.path.dirname(os.path.abspath(__file__))
+        directorio_actual = os.path.join(ruta_actual, "Image")
+        x = self.search_nodes_containing_text(tipo)
+        print(f"{x} nodos con rider")
+        image_sizes = self.get_image_files_sizes(x, directorio_actual)
+        for file_path, size in image_sizes.items():
+            print(f"Archivo: {file_path}, Tamaño: {size} bytes")
 
-                search_recursive(node.left)
-                search_recursive(node.right)
-
-        search_recursive(current_node)
-        return NodeList
-    
-    def buscar_archivos_por_tamano(self, tipo, tamano_maximo):
-        archivos_encontrados = []
-
-        # Obtenemos la lista de nodos con el tipo especificado
-        nodos_encontrados = self._Search_Nodes(tipo)
-
-        # Iteramos sobre los nodos encontrados
-        for nodo in nodos_encontrados:
-            # Aquí puedes realizar alguna acción con el nodo, como buscar archivos en la carpeta asociada a ese nodo
-            carpeta_asociada = nodo.data  # Suponiendo que el dato del nodo es la ruta a la carpeta
-            archivos_carpeta = self.encontrar_archivos(carpeta_asociada)
-            
-            # Iteramos sobre los archivos encontrados y verificamos si su tamaño es menor al tamaño máximo
-            for archivo in archivos_carpeta:
-                ruta_archivo = os.path.join(carpeta_asociada, archivo)
-                if os.path.isfile(ruta_archivo) and os.path.getsize(ruta_archivo) < tamano_maximo:
-                    archivos_encontrados.append(archivo)
-
-        return archivos_encontrados
-
-    # Franche
     def search_Grandfather(self, data_s: Any) -> None:
         father = self.search_Father(data_s)
         if father is not None:

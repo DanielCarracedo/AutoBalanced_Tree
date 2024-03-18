@@ -31,7 +31,6 @@ class BalancedTreeWg(QMainWindow):
         self.Agree.clicked.connect(self.insertar_nodo)
         self.Deleted.clicked.connect(self.eliminar_nodo)
         self.Buscar.clicked.connect(self.search_Node)
-        self.Search.clicked.connect(self.search_Nodes)
         self.Recorrer.clicked.connect(self.levels)
 
         # Agregando funciones a las QComboBox
@@ -112,9 +111,6 @@ class BalancedTreeWg(QMainWindow):
                 f"No se encontró la imagen '{nombre_imagen}' en el directorio '{directorio}'")
             return None
 
-    def search_Nodes(self):
-        pass
-
     def levels(self):
         # Borra el texto anterior antes de agregar el nuevo texto
         self.Recorrido.clear()
@@ -156,9 +152,11 @@ class BalancedTreeWg(QMainWindow):
             pad = "cuenta como padre padre al nodo  " + f"{p.data}"
             return pad
         elif x == " Encontrar el abuelo del nodo":
-            grand = self.tree._Search_Grandpa()
-            grandpa = "todavia no pa :P"
-            return grandpa
+            grand = self.tree.search_Grandfather(find)
+            if grand is None:
+                return f"El nodo no tiene Abuelo"
+
+            return f"El abuelo del nodo es: {grand.data}"
         elif x == "Encontrar el tío del nodo":
             t = self.tree._search_Uncle(self.tree.root, None, None, find)
             if t is None:
