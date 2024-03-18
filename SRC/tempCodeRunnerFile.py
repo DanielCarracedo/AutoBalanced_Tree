@@ -1,1 +1,1 @@
-print("Si existo Bro")
+T.Delete_Node(6)

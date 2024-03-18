@@ -61,6 +61,11 @@ class Tree:
     def __init__(self, root: "Node" = None) -> None:
         self.root = root
 
+    def _max_value(self, node):
+        while node.right is not None:
+            node = node.right
+        return node
+
     def srr(self, node) -> Node:
         aux = node.left
         node.left = aux.right
@@ -170,6 +175,7 @@ class Tree:
             node = self.rebalance(node)
 
     def find_predecessor(self, node):
+        node = self.search_node(node)
         if node.left is not None:
             return self._max_value(node.left)
         else:
@@ -218,7 +224,8 @@ class Tree:
         node = self.search_node(node)
         if node is not None:
             if node.right is not None and node.left is not None:
-                predecessor = self.find_predecessor(node)
+                predecessor = self.find_predecessor(node.data)
+                print(predecessor.data)
                 father = self.search_Father(predecessor.data)
                 if predecessor.left is None:
                     node.data = predecessor.data
@@ -366,10 +373,9 @@ T._Insert_New_node(7)
 T._Insert_New_node(8)
 T._Insert_New_node(9)
 T._Insert_New_node(10)
-
 ruta_actual = os.path.dirname(os.path.abspath(__file__))
 
 # Paso 2: Construir la ruta de la carpeta dentro de tu proyecto
-ruta_carpeta_objetivo = os.path.join(ruta_actual, "bike")
+ruta_carpeta_objetivo = os.path.join(ruta_actual)
 
 draw_binary_tree(T.root, ruta_carpeta_objetivo, "Prueba")
