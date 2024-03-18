@@ -116,20 +116,18 @@ class BalancedTreeWg(QMainWindow):
         pass
 
     def levels(self):
-        self.Recorrido.setText("")
+        # Borra el texto anterior antes de agregar el nuevo texto
+        self.Recorrido.clear()
+
         # La variable L recibe la lista de listas que contiene los datos y los niveles de los nodos
         L = self.tree._Levels_Tree_r(self.tree.root, level=0, levels=[])
-        # El primer for representa el nivel en el que nos encontramos
+
+        # Recorre la lista de niveles y nodos
         for i in range(len(L)):
-
-            # El segundo  representa la lista en la que nos encontramos
             for j in range(len(L)):
-
-                # La condicion es que si el nivel del nodo de la lista en la posicion j es igual al nivel
-                # en el que nos encontramos entonces lo imprimimos
+                # Si el nivel del nodo es igual al nivel actual, agrega el nodo al QTextEdit
                 if L[j][1] == i:
-                    agg = self.Recorrido.text() + L[j][0] + " "
-                    self.Recorrido.setText(agg)
+                    self.Recorrido.insertPlainText(L[j][0] + " ")
 
     def search_Node(self):
         find = self.Imagen_2.currentText()
