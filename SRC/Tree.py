@@ -1,6 +1,8 @@
 from typing import Any, List, Optional, Tuple
 from collections import deque
-
+import matplotlib.pyplot as plt
+import networkx as nx
+import os
 # Creacion de la clase nodo
 
 
@@ -44,6 +46,9 @@ class Stack:
 
 
 class Node:
+
+    # Creacion de la clase Tree y sus funciones
+
     def __init__(self, data: any) -> None:
         self.left: Optional["Node"] = None
         self.right: Optional["Node"] = None
@@ -56,33 +61,40 @@ class Tree:
     def __init__(self, root: "Node" = None) -> None:
         self.root = root
 
+    def _max_value(self, node):
+        while node.right is not None:
+            node = node.right
+        return node
+
     def srr(self, node) -> Node:
         aux = node.left
         node.left = aux.right
         aux.right = node
+        father = self.search_Father(node.data)
         if node.data == self.root.data:
             self.root = aux
-        father = self.search_Father(node.data)
-        if father.left is not None:
-            if father.right.data == node.data:
-                father.right = aux
-        if father.right is not None:
-            if father.left.data == node.data:
-                father.left = aux
+        if father is not None:
+            if father.left is not None:
+                if father.right.data == node.data:
+                    father.right = aux
+            if father.right is not None:
+                if father.left.data == node.data:
+                    father.left = aux
 
     def slr(self, node) -> Node:
         aux = node.right
         node.right = aux.left
         aux.left = node
+        father = self.search_Father(node.data)
         if node.data == self.root.data:
             self.root = aux
-        father = self.search_Father(node.data)
-        if father.left is not None:
-            if father.right.data == node.data:
-                father.right = aux
-        if father.right is not None:
-            if father.left.data == node.data:
-                father.left = aux
+        if father is not None:
+            if father.left is not None:
+                if father.right.data == node.data:
+                    father.right = aux
+            if father.right is not None:
+                if father.left.data == node.data:
+                    father.left = aux
 
     def dlrr(self, node) -> Node:
         aux = node.left.right
@@ -99,8 +111,7 @@ class Tree:
         aux.right = node.right
         if node.right.data == self.root.data:
             self.root = aux
-        father = self.search_Father(node.data)
-        father.left = aux
+        node.right = aux
         self.slr(node)
 
     def height(self, node):
@@ -123,21 +134,18 @@ class Tree:
 
         return max_level
 
-    def balance_factor(self, node):
-        if node is None:
-            return 0
-
-        left_height = self.height(node.left)
-        right_height = self.height(node.right)
-        return right_height - left_height
-
     def rebalance(self, node):
         balance = self.balance_factor(node)
         leftbalance = self.balance_factor(node.left)
         rightbalance = self.balance_factor(node.right)
-        print(f"{balance} {node.data}")
-        print(f"{leftbalance} l")
-        print(f"{rightbalance} r")
+        if balance == 2 and rightbalance == 0:
+            print("conflicto 2")
+            return self.slr(node)
+
+        if balance == -2 and leftbalance == 0:
+            print("conflicto -2")
+            return self.srr(node)
+
         if balance > 1 and rightbalance > 0:
             print("slr")
             return self.slr(node)
@@ -154,12 +162,6 @@ class Tree:
             print("drlr")
             return self.drlr(node)
 
-        if balance == 2 and rightbalance == 0:
-            return self.slr(node)
-
-        if balance == -2 and leftbalance == 0:
-            return self.srr(node)
-
         return node
 
     def rebalance_tree(self, node):
@@ -174,6 +176,7 @@ class Tree:
             node = self.rebalance(node)
 
     def find_predecessor(self, node):
+        node = self.search_node(node)
         if node.left is not None:
             return self._max_value(node.left)
         else:
@@ -189,30 +192,41 @@ class Tree:
                     break
             return pred
 
-    def _max_value(self, node):
-        while node.right is not None:
-            node = node.right
-        return node
+    def _Insert_New_node(self, dato) -> None:
+        if not self.search_node(dato):
+            dato = Node(dato)
+            if self.root is None:
+                self.root = dato
+                return True
 
-    def search_node(self, node):
-        p = self.root
-        s = Stack()
-        while (p is not None or not s.is_empty()):
-            if p is not None:
-                if p.data == node:
-                    return p
-                else:
-                    s.add(p)
-                    p = p.left
-            else:
-                p = s.remove()
-                p = p.right
+            p = self.search_node(dato)
+            stack = Stack()
+            current = self.root
+            if p is None:
+                while current:
+                    if dato.data < current.data:
+                        if current.left is None:
+                            current.left = dato
+                            self.rebalance_tree(dato)
+                            return True
+                        else:
+                            current = current.left
+                    elif dato.data > current.data:
+                        if current.right is None:
+                            current.right = dato
+                            self.rebalance_tree(dato)
+                            return True
+                        else:
+                            current = current.right
+        else:
+            return False
 
     def Delete_Node(self, node) -> None:
         node = self.search_node(node)
         if node is not None:
             if node.right is not None and node.left is not None:
-                predecessor = self.find_predecessor(node)
+                predecessor = self.find_predecessor(node.data)
+                print(predecessor.data)
                 father = self.search_Father(predecessor.data)
                 if predecessor.left is None:
                     node.data = predecessor.data
@@ -246,6 +260,48 @@ class Tree:
                     father.right = None
         self.rebalance_tree(father)
 
+    def search_node(self, node):
+        p = self.root
+        s = Stack()
+        while (p is not None or not s.is_empty()):
+            if p is not None:
+                if p.data == node:
+                    return p
+                else:
+                    s.add(p)
+                    p = p.left
+            else:
+                p = s.remove()
+                p = p.right
+
+    # Funcion auxiliar para imprimir el recorrido por niveles
+
+    def _Levels_Tree_r(self, node: "Node", level=0, levels=None) -> None:
+        if levels is None:
+            levels = []
+
+        if node is not None:
+            levels.append([node.data, level])
+            if node.left is not None:
+                self._Levels_Tree_r(node.left, level + 1, levels)
+            if node.right is not None:
+                self._Levels_Tree_r(node.right, level + 1, levels)
+        return levels
+
+    # Daniel
+    def _Node_Level(self, node):
+        node = self.search_node(node)
+        return self.height(self.root) - self.height(node)
+
+    # Jose
+    def balance_factor(self, node):
+        if node is None:
+            return 0
+
+        left_height = self.height(node.left)
+        right_height = self.height(node.right)
+        return right_height - left_height
+
     def search_Father(self, data_s: Any) -> None:
         p, pad = self.root, None
         s, flag = Stack(), False
@@ -264,12 +320,6 @@ class Tree:
                 pad = p
                 p = p.right
 
-    def _Insert_New_node(self) -> None:
-        pass
-
-    def _Search_Node(self) -> None:
-        pass
-    
     def encontrar_ruta(self,name_carpeta )->None:
         if name_carpeta != "Elige una opción":
         # Recorre los archivos y directorios en todo el sistema de archivos
@@ -342,20 +392,7 @@ class Tree:
 
         return archivos_encontrados
 
-        
-                
-                
-                    
-                    
-    
-        
-
-    def _Levels_Tree(self) -> None:
-        pass
-
-    def _Node_Level(self) -> None:
-        pass
-
+    # Franche
     def search_Grandfather(self, data_s: Any) -> None:
         father = self.search_Father(data_s)
         if father is not None:
@@ -364,54 +401,70 @@ class Tree:
         else:
             print("El nodo no tiene abuelo")
             return None
-            
 
-    def search_uncle(self, data_s: Any) -> Optional[Node]:
-        father = self.search_Father(data_s)
-        if father is not None:
-            grandfather = self.search_Father(father.data)
-            if grandfather is not None:
-                if grandfather.left == father:
-                    return grandfather.right
-                else:
-                    return grandfather.left
+    # Ya
+    def _search_Uncle(self, node, node2, node3, elem):
+        if node is not None:
+            if elem == node.data:
+                return node3
+            elif (elem < node.data):
+                if node2 is not None:
+                    if node == node2.left:
+                        return self._search_Uncle(node.left, node, node2.right, elem)
+                    else:
+                        return self._search_Uncle(node.left, node, node2.left, elem)
+                return self._search_Uncle(node.left, node, None, elem)
+            else:
+                if node2 is not None:
+                    if node == node2.left:
+                        return self._search_Uncle(node.right, node, node2.right, elem)
+                    else:
+                        return self._search_Uncle(node.right, node, node2.left, elem)
+                return self._search_Uncle(node.right, node, None, elem)
         return None
 
-    def levels_nr(self) -> None:
-        p, q = self.root, Queue()
-        q.add(p)
-        while not q.is_empty():
-            p = q.remove()
-            print(p.data, end=' ')
-            if p.left is not None:
-                q.add(p.left)
-            if p.right is not None:
-                q.add(p.right)
+
+def draw_binary_tree(root, relative_path, filename):
+    # Construye la ruta completa al archivo utilizando la ruta relativa proporcionada
+    filepath = os.path.join(relative_path, filename)
+
+    G = nx.Graph()
+
+    def add_edges(node, pos=None, level=0, max_level=None):
+        if max_level is not None and level > max_level:
+            return
+        if pos is None:
+            pos = (0, 0)
+        G.add_node(node.data, pos=pos)
+        if node.left:
+            new_pos = (pos[0] - 1 / 2 ** level, pos[1] - 1)
+            G.add_edge(node.data, node.left.data)
+            add_edges(node.left, pos=new_pos,
+                      level=level + 1, max_level=max_level)
+        if node.right:
+            new_pos = (pos[0] + 1 / 2 ** level, pos[1] - 1)
+            G.add_edge(node.data, node.right.data)
+            add_edges(node.right, pos=new_pos,
+                      level=level + 1, max_level=max_level)
+
+    add_edges(root)
+    pos = nx.get_node_attributes(G, 'pos')
+    nx.draw(G, pos, with_labels=True, node_size=700,
+            node_color="skyblue", font_size=10)
+
+    # Guarda el árbol como imagen en la ruta especificada
+    plt.savefig(filepath)
+    plt.close()
 
 
-def generate_sample_abb():
-    T = Tree(Node('A'))
-    T.root.left = Node('B')
-    T.root.right = Node('C')
-    T.root.left.left = Node('D')
-    T.root.left.right = Node('E')
-    T.root.right.right = Node('F')
-    T.root.left.left.left = Node('G')
-    T.root.left.left.right = Node('H')
-    T.root.right.right.left = Node('I')
-    T.root.right.right.right = Node('J')
-    T.root.right.left = Node('K')
+"""T = Tree()
+T._Insert_New_node(3)
+T._Insert_New_node(2)
+T._Insert_New_node(3)
+ruta_actual = os.path.dirname(os.path.abspath(__file__))
 
-    return T
+# Paso 2: Construir la ruta de la carpeta dentro de tu proyecto
+ruta_carpeta_objetivo = os.path.join(ruta_actual)
 
-
-T = generate_sample_abb()
-T.levels_nr()
-T.Delete_Node("G")
-print("\n")
-T.levels_nr()
-T.Delete_Node("E")
-T.levels_nr()
-
-T2= generate_sample_abb
-
+draw_binary_tree(T.root, ruta_carpeta_objetivo, "Prueba")
+"""
