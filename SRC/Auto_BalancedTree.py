@@ -116,9 +116,9 @@ class BalancedTreeWg(QMainWindow):
         pass
 
     def levels(self):
+        self.Recorrido.setText("")
         # La variable L recibe la lista de listas que contiene los datos y los niveles de los nodos
-        L = self.tree._Levels_Tree_r(self.tree.root)
-
+        L = self.tree._Levels_Tree_r(self.tree.root, level=0, levels=[])
         # El primer for representa el nivel en el que nos encontramos
         for i in range(len(L)):
 
@@ -132,12 +132,42 @@ class BalancedTreeWg(QMainWindow):
                     self.Recorrido.setText(agg)
 
     def search_Node(self):
-        x = self.Imagen_2.currentText()
-        node = self.tree.search_node(x)
-        if not node:
-            print("Este nodo no existe bro")
+        find = self.Imagen_2.currentText()
+        x = self.tree.search_node(find)
+        if not x:
+            self.Info.setText("El nodo no existe")
         else:
-            print("Si existo Bro")
+            y = self._options()
+            agg = "El nodo "+f"{x.data}"+" "+f"{y}"
+            self.Info.setText(agg)
+
+    def _options(self):
+        x = self.Elegir.currentText()
+        find = self.Imagen_2.currentText()
+        if x == "Obtener el nivel del nodo":
+            l = self.tree._Node_Level(find)
+            level = "El nivel del nodo es "+f"{l}"
+            return level
+        elif x == "Obtener el factor de balanceo (equilibrio) del nodo":
+            nodo = self.tree.search_node(find)
+            f = self.tree.balance_factor(nodo)
+            fac = "El factor de balanceo  del nodo es " + f"{f}"
+            return fac
+        elif x == "Encontrar el padre del nodo":
+            p = self.tree.search_Father(find)
+            pad = "cuenta como padre padre al nodo  " + f"{p.data}"
+            return pad
+        elif x == " Encontrar el abuelo del nodo":
+            grand = self.tree._Search_Grandpa()
+            grandpa = "todavia no pa :P"
+            return grandpa
+        elif x == "Encontrar el tío del nodo":
+            t = self.tree._search_Uncle(self.tree.root, None, None, find)
+            if t is None:
+                tio = "El nodo no tiene tio"
+            else:
+                tio = "tiene como tio al nodo  "+f"{t.data}"
+            return tio
 
     def update_image(self):
         ruta_actual = os.path.dirname(os.path.abspath(__file__))
