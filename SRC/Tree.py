@@ -362,6 +362,7 @@ def draw_binary_tree(root, relative_path, filename):
     plt.close()
 
 
+"""
 T = Tree()
 T._Insert_New_node(1)
 T._Insert_New_node(2)
@@ -373,9 +374,10 @@ T._Insert_New_node(7)
 T._Insert_New_node(8)
 T._Insert_New_node(9)
 T._Insert_New_node(10)
+T.Delete_Node(4)
 ruta_actual = os.path.dirname(os.path.abspath(__file__))
 
 # Paso 2: Construir la ruta de la carpeta dentro de tu proyecto
 ruta_carpeta_objetivo = os.path.join(ruta_actual)
 
-draw_binary_tree(T.root, ruta_carpeta_objetivo, "Prueba")
+draw_binary_tree(T.root, ruta_carpeta_objetivo, "Prueba")"""
