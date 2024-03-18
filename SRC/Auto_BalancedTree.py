@@ -35,13 +35,10 @@ class BalancedTreeWg(QMainWindow):
         self.Recorrer.clicked.connect(self.levels)
 
         # Agregando funciones a las QComboBox
-
-        Cat_2 = self.Categoria_2.currentText()
-        Cat_3 = self.Categoria_3.currentText()
-
         self.Categoria.currentIndexChanged.connect(self.agregar_archivos)
         self.Categoria_1.currentIndexChanged.connect(self.agregar_archivos_1)
         self.Categoria_2.currentIndexChanged.connect(self.agregar_archivos_2)
+        self.Elegir.currentIndexChanged.connect(self._options)
         self.Categoria_3.currentIndexChanged.connect(self.agregar_archivos_3)
 
     def go_to_page1(self) -> None:
@@ -115,7 +112,8 @@ class BalancedTreeWg(QMainWindow):
     def search_Nodes(self):
         pass
 
-    def levels(self):
+    def levels(self) -> None:
+
         # La variable L recibe la lista de listas que contiene los datos y los niveles de los nodos
         L = self.tree._Levels_Tree_r(self.tree.root)
 
@@ -128,17 +126,41 @@ class BalancedTreeWg(QMainWindow):
                 # La condicion es que si el nivel del nodo de la lista en la posicion j es igual al nivel
                 # en el que nos encontramos entonces lo imprimimos
                 if L[j][1] == i:
-                    agg = self.Recorrido.text() + L[j][0] + " "
+                    agg = self.Recorrido.text() + L[j][0]+ " "
                     self.Recorrido.setText(agg)
-
+   
     def search_Node(self):
-        x = self.Imagen_2.currentText()
-        node = self.tree.search_node(x)
-        if not node:
-            print("Este nodo no existe bro")
-        else:
-            print("Si existo Bro")
-
+        find = self.Imagen_2.currentText()
+        x = self.tree.search_node(find)
+        y = self._options()
+        agg = "El nodo "+f"{x.data}"+" "+f"{y}"
+        self.Info.setText(agg)
+        
+    def _options(self):
+        x = self.Elegir.currentText()
+        find = self.Imagen_2.currentText()
+        if x == "Obtener el nivel del nodo":
+            l = self.tree._Node_Level(find)
+            level = "El nivel del nodo es "+f"{l}"
+            return level 
+        elif x == "Obtener el factor de balanceo (equilibrio) del nodo":
+            nodo = self.tree.search_node(find)
+            f = self.tree.balance_factor(nodo) 
+            fac = "El factor de balanceo  del nodo es " + f"{f}"
+            return fac
+        elif x== "Encontrar el padre del nodo":
+            p = self.tree.search_Father(find)
+            pad = "cuenta como padre padre al nodo  "+ f"{p.data}"
+            return pad
+        elif x == " Encontrar el abuelo del nodo":
+            grand = self.tree._Search_Grandpa()
+            grandpa = "todavia no pa :P"
+            return grandpa
+        elif x == "Encontrar el tío del nodo":
+            t = self.tree._search_Uncle(self.tree.root,None,None,find)
+            tio = "tiene como tio al nodo  "+f"{t.data}"
+            return tio
+        
     def update_image(self):
         ruta_actual = os.path.dirname(os.path.abspath(__file__))
         directorio_actual = os.path.join(ruta_actual, "Image")

@@ -318,8 +318,25 @@ class Tree:
         pass
 
     # Ya
-    def _search_Uncle(self) -> None:
-        pass
+    def _search_Uncle(self,node, node2, node3,elem):
+        if node is not None:
+            if elem == node.data:
+                return node3 
+            elif(elem < node.data):
+                if node2 is not None:
+                    if node == node2.left:
+                        return self._search_Uncle(node.left, node, node2.right,elem)
+                    else:
+                        return self._search_Uncle(node.left, node, node2.left,elem)
+                return self._search_Uncle(node.left,node,None,elem)
+            else:
+                if node2 is not None:
+                    if node == node2.left:
+                        return self._search_Uncle(node.right, node, node2.right,elem)
+                    else:
+                        return self._search_Uncle(node.right, node, node2.left,elem)
+                return self._search_Uncle(node.right,node,None,elem)
+        return None
 
 
 def draw_binary_tree(root, relative_path, filename):
