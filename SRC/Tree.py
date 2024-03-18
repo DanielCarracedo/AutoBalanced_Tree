@@ -269,9 +269,83 @@ class Tree:
 
     def _Search_Node(self) -> None:
         pass
+    
+    def encontrar_ruta(self,name_carpeta )->None:
+        if name_carpeta != "Elige una opción":
+        # Recorre los archivos y directorios en todo el sistema de archivos
+            for root, dirs, files in os.walk('/'):
+                # Verifica si el nombre de la carpeta coincide
+                if name_carpeta in dirs:
+                # Si encuentra la carpeta, devuelve la ruta completa
+                    return os.path.join(root, name_carpeta)
+    
+            # Si no se encuentra la carpeta, devuelve None
+            return None
+        
+    def encontrar_archivos(self,ruta)-> None:
+        # Verifica si la ruta de la carpeta existe
+        if os.path.exists(ruta) and os.path.isdir(ruta):
+            # Lista para almacenar los nombres de archivos de imágenes
+            nombres_imagenes = []
+        
+            # Itera sobre los archivos en la carpeta
+            for archivo in os.listdir(ruta):
+                # Verifica si el archivo es una imagen (puedes agregar más extensiones si es necesario)
+                if archivo.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+                    nombres_imagenes.append(archivo)
+        
+            return nombres_imagenes
+    def _Search_Nodes(self, type: str) -> None:
+        current_node = self.root
+        NodeList = []
 
-    def _Search_Nodes(self) -> None:
-        pass
+        def search_recursive(node):
+            if node is not None:
+                if type == 'bike' and 'bike' in node.data:
+                    NodeList.append(node)
+                elif type == 'cars' and 'cars' in node.data:
+                    NodeList.append(node)
+                elif type == 'cats' and 'cats' in node.data:
+                    NodeList.append(node)
+                elif type == 'dogs' and 'dog' in node.data:
+                    NodeList.append(node)
+                elif type == 'flowers' and 'flowers' in node.data:
+                    NodeList.append(node)
+                elif type == 'horses' and 'horse' in node.data:
+                    NodeList.append(node)
+                elif type == 'human' and 'rider' in node.data:
+                    NodeList.append(node)
+
+                search_recursive(node.left)
+                search_recursive(node.right)
+
+        search_recursive(current_node)
+        return NodeList
+    
+    def buscar_archivos_por_tamano(self, type, tamano_maximo):
+        archivos_encontrados = []
+
+        # Encontrar la ruta de la carpeta correspondiente al tipo
+        carpeta_tipo = encontrar_ruta(type)
+        if carpeta_tipo is None:
+            print(f"No se encontró la carpeta para el tipo {type}")
+            return archivos_encontrados
+
+        # Iterar sobre los archivos en la carpeta del tipo
+        for archivo in os.listdir(carpeta_tipo):
+            ruta_archivo = os.path.join(carpeta_tipo, archivo)
+            if os.path.isfile(ruta_archivo) and os.path.getsize(ruta_archivo) < tamano_maximo:
+                archivos_encontrados.append(archivo)
+        for archivo in archivos_encontrados:
+            print(archivo)
+
+        
+                
+                
+                    
+                    
+    
+        
 
     def _Levels_Tree(self) -> None:
         pass
@@ -279,11 +353,26 @@ class Tree:
     def _Node_Level(self) -> None:
         pass
 
-    def _Search_Grandpa(self) -> None:
-        pass
+    def search_Grandfather(self, data_s: Any) -> None:
+        father = self.search_Father(data_s)
+        if father is not None:
+            grandfather = self.search_Father(father.data)
+            return grandfather
+        else:
+            print("El nodo no tiene abuelo")
+            return None
+            
 
-    def _search_Uncle(self) -> None:
-        pass
+    def search_uncle(self, data_s: Any) -> Optional[Node]:
+        father = self.search_Father(data_s)
+        if father is not None:
+            grandfather = self.search_Father(father.data)
+            if grandfather is not None:
+                if grandfather.left == father:
+                    return grandfather.right
+                else:
+                    return grandfather.left
+        return None
 
     def levels_nr(self) -> None:
         p, q = self.root, Queue()
@@ -320,3 +409,6 @@ print("\n")
 T.levels_nr()
 T.Delete_Node("E")
 T.levels_nr()
+
+T2= generate_sample_abb
+
