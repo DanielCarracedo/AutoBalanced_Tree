@@ -186,32 +186,33 @@ class Tree:
             return pred
 
     def _Insert_New_node(self, dato) -> None:
-        dato = Node(dato)
-        if self.root is None:
-            self.root = dato
-            return True
+        if not self.search_node(dato):
+            dato = Node(dato)
+            if self.root is None:
+                self.root = dato
+                return True
 
-        p = self.search_node(dato)
-        stack = Stack()
-        current = self.root
-        if p is None:
-            while current:
-                if dato.data < current.data:
-                    if current.left is None:
-                        current.left = dato
-                        self.rebalance_tree(dato)
-                        return True
-                    else:
-                        current = current.left
-                elif dato.data > current.data:
-                    if current.right is None:
-                        current.right = dato
-                        self.rebalance_tree(dato)
-                        return True
-                    else:
-                        current = current.right
-
-        return False
+            p = self.search_node(dato)
+            stack = Stack()
+            current = self.root
+            if p is None:
+                while current:
+                    if dato.data < current.data:
+                        if current.left is None:
+                            current.left = dato
+                            self.rebalance_tree(dato)
+                            return True
+                        else:
+                            current = current.left
+                    elif dato.data > current.data:
+                        if current.right is None:
+                            current.right = dato
+                            self.rebalance_tree(dato)
+                            return True
+                        else:
+                            current = current.right
+        else:
+            return False
 
     def Delete_Node(self, node) -> None:
         node = self.search_node(node)
@@ -370,8 +371,7 @@ def draw_binary_tree(root, relative_path, filename):
     plt.close()
 
 
-"""
-T = Tree()
+"""T = Tree()
 T._Insert_New_node(1)
 T._Insert_New_node(2)
 T._Insert_New_node(3)
@@ -381,4 +381,11 @@ T._Insert_New_node(6)
 T._Insert_New_node(7)
 T._Insert_New_node(8)
 T._Insert_New_node(9)
-T._Insert_New_node(10)"""
+T._Insert_New_node(10)
+
+ruta_actual = os.path.dirname(os.path.abspath(__file__))
+
+# Paso 2: Construir la ruta de la carpeta dentro de tu proyecto
+ruta_carpeta_objetivo = os.path.join(ruta_actual, "bike")
+
+draw_binary_tree(T.root, ruta_carpeta_objetivo, "Prueba")"""

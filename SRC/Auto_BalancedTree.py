@@ -41,7 +41,7 @@ class BalancedTreeWg(QMainWindow):
 
         self.Categoria.currentIndexChanged.connect(self.agregar_archivos)
         self.Categoria_1.currentIndexChanged.connect(self.agregar_archivos_1)
-        self.Categoria_3.currentIndexChanged.connect(self.agregar_archivos_2)
+        self.Categoria_2.currentIndexChanged.connect(self.agregar_archivos_2)
         self.Categoria_3.currentIndexChanged.connect(self.agregar_archivos_3)
 
     def go_to_page1(self) -> None:
@@ -115,12 +115,14 @@ class BalancedTreeWg(QMainWindow):
     def search_Nodes(self):
         pass
 
-    def levels():
+    def levels(self):
         pass
 
     def search_Node(self):
         x = self.Imagen_2.currentText()
         node = self.tree.search_node(x)
+        if not node:
+            print("here")
 
     def update_image(self):
         ruta_actual = os.path.dirname(os.path.abspath(__file__))
@@ -136,19 +138,25 @@ class BalancedTreeWg(QMainWindow):
         ruta_actual = os.path.dirname(os.path.abspath(__file__))
         ruta_carpeta_objetivo = os.path.join(ruta_actual, "Image")
         dato = self.Imagenes.currentText()
-        self.tree._Insert_New_node(dato)
-        draw_binary_tree(self.tree.root, ruta_carpeta_objetivo, "Arbol")
-        self.update_image()
-        self.go_to_page1()
+        x = self.tree._Insert_New_node(dato)
+        if not x:
+            self.go_to_page1()
+        else:
+            draw_binary_tree(self.tree.root, ruta_carpeta_objetivo, "Arbol")
+            self.update_image()
+            self.go_to_page1()
 
     def eliminar_nodo(self, dato):
         ruta_actual = os.path.dirname(os.path.abspath(__file__))
         ruta_carpeta_objetivo = os.path.join(ruta_actual, "Image")
         dato = self.Imagen_1.currentText()
-        self.tree.Delete_Node(dato)
-        draw_binary_tree(self.tree.root, ruta_carpeta_objetivo, "Arbol")
-        self.update_image()
-        self.go_to_page1()
+        if not self.tree.search_node(dato):
+            self.go_to_page1()
+        else:
+            self.tree.Delete_Node(dato)
+            draw_binary_tree(self.tree.root, ruta_carpeta_objetivo, "Arbol")
+            self.update_image()
+            self.go_to_page1()
 
 
 if __name__ == '__main__':
