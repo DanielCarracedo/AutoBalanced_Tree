@@ -280,13 +280,16 @@ class Tree:
 
     # Funcion auxiliar para imprimir el recorrido por niveles
 
-    def _Levels_Tree_r(self, node: "Node", level=0, levels=[]) -> None:
+    def _Levels_Tree_r(self, node: "Node", level=0, levels=None) -> None:
+        if levels is None:
+            levels = []
+
         if node is not None:
             levels.append([node.data, level])
             if node.left is not None:
-                self._Levels_Tree_r(node.left, level + 1)
+                self._Levels_Tree_r(node.left, level + 1, levels)
             if node.right is not None:
-                self._Levels_Tree_r(node.right, level + 1)
+                self._Levels_Tree_r(node.right, level + 1, levels)
         return levels
 
     # Daniel
@@ -380,13 +383,14 @@ def draw_binary_tree(root, relative_path, filename):
     plt.close()
 
 
-T = Tree()
+"""T = Tree()
 T._Insert_New_node(3)
 T._Insert_New_node(2)
-T._Insert_New_node(1)
+T._Insert_New_node(3)
 ruta_actual = os.path.dirname(os.path.abspath(__file__))
 
 # Paso 2: Construir la ruta de la carpeta dentro de tu proyecto
 ruta_carpeta_objetivo = os.path.join(ruta_actual)
 
 draw_binary_tree(T.root, ruta_carpeta_objetivo, "Prueba")
+"""
