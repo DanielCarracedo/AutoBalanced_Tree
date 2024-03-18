@@ -322,22 +322,25 @@ class Tree:
         search_recursive(current_node)
         return NodeList
     
-    def buscar_archivos_por_tamano(self, type, tamano_maximo):
+    def buscar_archivos_por_tamano(self, tipo, tamano_maximo):
         archivos_encontrados = []
 
-        # Encontrar la ruta de la carpeta correspondiente al tipo
-        carpeta_tipo = encontrar_ruta(type)
-        if carpeta_tipo is None:
-            print(f"No se encontró la carpeta para el tipo {type}")
-            return archivos_encontrados
+        # Obtenemos la lista de nodos con el tipo especificado
+        nodos_encontrados = self._Search_Nodes(tipo)
 
-        # Iterar sobre los archivos en la carpeta del tipo
-        for archivo in os.listdir(carpeta_tipo):
-            ruta_archivo = os.path.join(carpeta_tipo, archivo)
-            if os.path.isfile(ruta_archivo) and os.path.getsize(ruta_archivo) < tamano_maximo:
-                archivos_encontrados.append(archivo)
-        for archivo in archivos_encontrados:
-            print(archivo)
+        # Iteramos sobre los nodos encontrados
+        for nodo in nodos_encontrados:
+            # Aquí puedes realizar alguna acción con el nodo, como buscar archivos en la carpeta asociada a ese nodo
+            carpeta_asociada = nodo.data  # Suponiendo que el dato del nodo es la ruta a la carpeta
+            archivos_carpeta = self.encontrar_archivos(carpeta_asociada)
+            
+            # Iteramos sobre los archivos encontrados y verificamos si su tamaño es menor al tamaño máximo
+            for archivo in archivos_carpeta:
+                ruta_archivo = os.path.join(carpeta_asociada, archivo)
+                if os.path.isfile(ruta_archivo) and os.path.getsize(ruta_archivo) < tamano_maximo:
+                    archivos_encontrados.append(archivo)
+
+        return archivos_encontrados
 
         
                 
