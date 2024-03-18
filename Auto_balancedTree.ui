@@ -1796,6 +1796,14 @@ QComboBox::down-arrow {
                       </item>
                       <item>
                        <widget class="QLabel" name="Info">
+                        <property name="font">
+                         <font>
+                          <family>Bahnschrift SemiBold</family>
+                          <pointsize>12</pointsize>
+                          <weight>75</weight>
+                          <bold>true</bold>
+                         </font>
+                        </property>
                         <property name="text">
                          <string/>
                         </property>
@@ -2375,6 +2383,21 @@ QComboBox::down-arrow {
                          </spacer>
                         </item>
                        </layout>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="label_19">
+                        <property name="font">
+                         <font>
+                          <family>Bahnschrift SemiBold</family>
+                          <pointsize>12</pointsize>
+                          <weight>75</weight>
+                          <bold>true</bold>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                       </widget>
                       </item>
                       <item>
                        <spacer name="verticalSpacer_15">
