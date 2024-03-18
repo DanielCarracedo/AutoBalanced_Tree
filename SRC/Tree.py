@@ -70,15 +70,16 @@ class Tree:
         aux = node.left
         node.left = aux.right
         aux.right = node
+        father = self.search_Father(node.data)
         if node.data == self.root.data:
             self.root = aux
-        father = self.search_Father(node.data)
-        if father.left is not None:
-            if father.right.data == node.data:
-                father.right = aux
-        if father.right is not None:
-            if father.left.data == node.data:
-                father.left = aux
+        if father is not None:
+            if father.left is not None:
+                if father.right.data == node.data:
+                    father.right = aux
+            if father.right is not None:
+                if father.left.data == node.data:
+                    father.left = aux
 
     def slr(self, node) -> Node:
         aux = node.right
@@ -325,8 +326,25 @@ class Tree:
         pass
 
     # Ya
-    def _search_Uncle(self) -> None:
-        pass
+    def _search_Uncle(self, node, node2, node3, elem):
+        if node is not None:
+            if elem == node.data:
+                return node3
+            elif (elem < node.data):
+                if node2 is not None:
+                    if node == node2.left:
+                        return self._search_Uncle(node.left, node, node2.right, elem)
+                    else:
+                        return self._search_Uncle(node.left, node, node2.left, elem)
+                return self._search_Uncle(node.left, node, None, elem)
+            else:
+                if node2 is not None:
+                    if node == node2.left:
+                        return self._search_Uncle(node.right, node, node2.right, elem)
+                    else:
+                        return self._search_Uncle(node.right, node, node2.left, elem)
+                return self._search_Uncle(node.right, node, None, elem)
+        return None
 
 
 def draw_binary_tree(root, relative_path, filename):
@@ -362,22 +380,13 @@ def draw_binary_tree(root, relative_path, filename):
     plt.close()
 
 
-"""
 T = Tree()
-T._Insert_New_node(1)
-T._Insert_New_node(2)
 T._Insert_New_node(3)
-T._Insert_New_node(4)
-T._Insert_New_node(5)
-T._Insert_New_node(6)
-T._Insert_New_node(7)
-T._Insert_New_node(8)
-T._Insert_New_node(9)
-T._Insert_New_node(10)
-T.Delete_Node(4)
+T._Insert_New_node(2)
+T._Insert_New_node(1)
 ruta_actual = os.path.dirname(os.path.abspath(__file__))
 
 # Paso 2: Construir la ruta de la carpeta dentro de tu proyecto
 ruta_carpeta_objetivo = os.path.join(ruta_actual)
 
-draw_binary_tree(T.root, ruta_carpeta_objetivo, "Prueba")"""
+draw_binary_tree(T.root, ruta_carpeta_objetivo, "Prueba")
