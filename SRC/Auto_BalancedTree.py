@@ -24,7 +24,6 @@ class BalancedTreeWg(QMainWindow):
         self.New_Node.clicked.connect(self.go_to_page2)
         self.Deleted_Node.clicked.connect(self.go_to_page3)
         self.Search_Node.clicked.connect(self.go_to_page4)
-        self.Search_Nodes.clicked.connect(self.go_to_page5)
         self.Levels.clicked.connect(self.go_to_page6)
 
         # Asignación de funciones a los botones
@@ -36,12 +35,10 @@ class BalancedTreeWg(QMainWindow):
         # Agregando funciones a las QComboBox
 
         Cat_2 = self.Categoria_2.currentText()
-        Cat_3 = self.Categoria_3.currentText()
 
         self.Categoria.currentIndexChanged.connect(self.agregar_archivos)
         self.Categoria_1.currentIndexChanged.connect(self.agregar_archivos_1)
         self.Categoria_2.currentIndexChanged.connect(self.agregar_archivos_2)
-        self.Categoria_3.currentIndexChanged.connect(self.agregar_archivos_3)
 
     def go_to_page1(self) -> None:
         # principal
@@ -83,12 +80,6 @@ class BalancedTreeWg(QMainWindow):
         lista_archivos = self.encontrar_archivos(Cat_2)
         self.Imagen_2.clear()
         self.Imagen_2.addItems(lista_archivos)
-
-    def agregar_archivos_3(self) -> None:
-        Cat_3 = self.Categoria_3.currentText()
-        lista_archivos = self.encontrar_archivos(Cat_3)
-        self.Imagen_3.clear()
-        self.Imagen_3.addItems(lista_archivos)
 
     def encontrar_archivos(self, name_carpeta) -> None:
         ruta_act = os.path.dirname(os.path.abspath(__file__))
